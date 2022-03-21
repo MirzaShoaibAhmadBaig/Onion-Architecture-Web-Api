@@ -2,11 +2,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using RepositoryLayer;
+using RepositoryLayer.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +35,10 @@ namespace OnionArchitectureWebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "OnionArchitectureWebApi", Version = "v1" });
             });
+
+            services.AddDbContext<ApplicationDBContext>(con => con.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
